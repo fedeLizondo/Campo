@@ -17,28 +17,36 @@ class loginTest extends PHPUnit_Framework_TestCase
     public function testAdd()
     {
         $a = New Login;
-        $result = $a->foo(5,6);
-        $this->assertEquals(11,$result);
 
         //EL NOMBRE_USUARIO ES NULL
         $result = $a->autenticar(null,"algo");
-        $this->assertEquals("El usuario es invalido",$result);
-        
+        $mensaje = json_decode( $result,true ); 
+
+        $this->assertEquals("El usuario es invalido",$mensaje['MENSAJE']);
+
         //LA CONTRASEÑA ES NULL
         $result = $a->autenticar("algo",null);
-        $this->assertEquals("La contraseña es invalida",$result);
+        
+        $mensaje = json_decode($result,true); 
+        $this->assertEquals("La contraseña es invalida",$mensaje['MENSAJE']);
 
         //EL USUARIO NO ESTE AUTENTIFICADO
         $result = $a->autenticar("uno","12345");
-        $this->assertEquals("El usuario fue autentificado exitosamente",$result);
+        $mensaje = json_decode( $result,true ); 
+        
+        $this->assertEquals("0,uno,12345",implode(",",$mensaje['MENSAJE']));
         //EL USUARIO YA ESTA AUTENTIFICADO
         $result = $a->autenticar("uno","12345");
-        $this->assertEquals("El usuario ya esta autentificado",$result);
+        $mensaje = json_decode( $result,true ); 
+        
+        $this->assertEquals("El usuario ya esta Autentificado",$mensaje['MENSAJE']);
              
         //EL USUARIO NO ESTE REGISTRADO
         $result = $a->autenticar("marco","polo");
-        $this->assertEquals("El usuario no esta registrado",$result);
-            
+        $mensaje = json_decode( $result,true ); 
+        
+        $this->assertEquals("El usuario no esta registrado",$mensaje['MENSAJE']);
+
         }    
 }
 
