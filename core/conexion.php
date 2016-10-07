@@ -1,7 +1,5 @@
 <?php
 
-    //include "dbSettings.php";
-
     if( session_status() != PHP_SESSION_ACTIVE )
         session_start();    
 
@@ -14,23 +12,37 @@
 
         function NombreUsuarioExiste($username)
         {
+            
             $boolean = false;
-            $db = new mysql();
-            $query = "SELECT * FROM USUARIO WHERE nombre is like '" + $username + "'"; 
-            $consulta = mysql_query($query) or die( false ) ;
-            $boolean = mysql_fetch_array($consulta);
+            try{
+                $conexion = new PDO("mysql:host=$servidor;dbname=$dbBaseDeDatos",$dbUsuario,$dbContrasenia);
+                $query = "SELECT * FROM USUARIO WHERE nombre is like %'" + $username + "'%;"; 
+                
+                $stmt =  $conexion->prepare($query);
+                $stmt->bindParam(":nombre",$username);
+                //password_hash();
+                
+                if( $stmt->execute() )
+                {
+                    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                    return count($resultado)>0; 
+                } 
+                else
+                {
+                    return false;
+                }
 
-            mysql_close($db);
-            return true; 
+            }
+            catch(PDOException $e)
+            {
+               die("La conexión fallo:".$e->getMessage());
+            }
         }
 
         function EmailUsuarioExiste($email)
         {
 
-            $db = new mysql();
-            $query = "SELECT * FROM USUARIO WHERE email is like '"+ $email +"'"; 
-            mysql_query($query) or die(mysql_error());
-            mysql_close($db);
         }
 
         function autentificar( $usuario , $password )
@@ -42,8 +54,30 @@
 
         function crearCuenta( $usuario,$password,$email,$nombre )
         {  
-            //TODO AGREGAR ESTADO 
-            return [0,$usuario,$password,"pepe@pepe.com","pedro martinez"];
+
+            try{
+                $conexion = new PDO("mysql:host=$servidor;dbname=$dbBaseDeDatos",$dbUsuario,$dbContrasenia);
+                $query = "SELECT * FROM USUARIO WHERE nombre is like %'" + $username + "'%;"; 
+                
+            $sql = "INSERT INTO USUARIO (NOMBRE,NOMBRE_USUARIO,CONTRASENIA,EMAIL) VALUES(:user, :name, :pass,:email)"; 
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':user',$usuario);
+            $stmt->bindParam(':name',$nombre);
+            $stmt->bindParam(':pass',password_hash($password),PASSWORD_BCRYPT);
+            $stmt->bindParam(':email',$email);
+
+                if($stmt->execute())
+                {    return true;}
+                else
+                {    return false;}
+                
+            }
+            catch(PDOException $e)
+            {
+                die( $e->getMessage());
+            }
+
+            //return [0,$usuario,$password,"pepe@pepe.com","pedro martinez"];
         }
 
         function crearProyecto($idUsuario,$password,$nombreProyecto,$integrantes)
