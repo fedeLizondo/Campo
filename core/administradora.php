@@ -1,11 +1,12 @@
 <?php
+require('conexion.php');
 
 session_start(); 
    if( session_status() != PHP_SESSION_ACTIVE )
         session_start();
 
 
-  class Login {
+  class Administradora {
 
     const ERROR = 0;  
     const OK = 1;
@@ -17,18 +18,15 @@ session_start();
         
         if( !is_null($nombre)&& !is_null($contrasenia) &&  !isset($_SESSION["ID_USUARIO"]))
         {
-            //TODO BUSCAR USUARIO Y SESSION EN BD
-            if($nombre != "marco")
+            $con = new Conexion;
+            if( $con->autentificar($nombre,$contrasenia) )
             {
-                $_SESSION["ID_USUARIO"] = 0;
-                $_SESSION["USUARIO"] = $nombre;
-                $_SESSION["CONTRASENIA"] = $contrasenia;           
-                $mensaje = [ $_SESSION["ID_USUARIO"], $_SESSION["USUARIO"], $_SESSION["CONTRASENIA"] ];
+                $mensaje = "El usuario fue autentificado correctamente";
+                $estado = 1;
             }
             else
-            {
                 $mensaje = "El usuario no esta registrado";
-            }   
+               
         }
         else
         {    
@@ -46,6 +44,37 @@ session_start();
         //DEVUELVO EL MENSAJE COMO JSON
         return json_encode($objectJSON);
     }
+
+    public function registrar($user,$nombre,$email,$password)
+    {
+        $estado = ERROR;
+        $mensaje = "";
+
+        if(!is_null($user) && !is_null($nombre) && !is_null($email) && !is_null($password) )
+        {
+               
+                password_hash($password);
+        }  
+        else
+        {
+            $mensaje = "El campo ";
+            if(is_null($user))
+                    $mensaje += " USUARIO ";
+
+            if(is_null($nombre))
+                    $mensaje += " NOMBRE ";
+            if(is_null($email))
+                $mensaje += " EMAIL ";
+            if(is_null($password))
+                $mensaje += "PASSWORD";
+            
+            $mensaje += " se encuentra invalido o vacio intente nuevamente";       
+             
+        }     
+            $objectJSON = ['ESTADO' => $estado,'MENSAJE' => $mensaje];
+            return json_encode($objectJSON);
+    }
+
 
   }//FIN CLASE LOGIN
  ?>

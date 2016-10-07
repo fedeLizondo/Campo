@@ -1,6 +1,6 @@
 <?php
 
-require 'login.php';
+require 'administradora.php';
 
 class loginTest extends PHPUnit_Framework_TestCase
 {
@@ -16,7 +16,7 @@ class loginTest extends PHPUnit_Framework_TestCase
      */
     public function testAdd()
     {
-        $a = New Login;
+        $a = New Administradora;
 
         //EL NOMBRE_USUARIO ES NULL
         $result = $a->autenticar(null,"algo");

@@ -1,51 +1,24 @@
 <?php
+    session_start();
+    require('administradora.php');
 
-session_start(); 
-   if( session_status() != PHP_SESSION_ACTIVE )
-        session_start();
-
-
-  class Login {
-
-    const ERROR = 0;  
-    const OK = 1;
-
-    public function autenticar($nombre,$contrasenia)
+    if( isset($_POST['EMAIL']) && isset($_POST['CONTRASENIA']) )
     {
-        $mensaje = "";
-        $estado  = 0;
-        
-        if( !is_null($nombre)&& !is_null($contrasenia) &&  !isset($_SESSION["ID_USUARIO"]))
-        {
-            //TODO BUSCAR USUARIO Y SESSION EN BD
-            if($nombre != "marco")
-            {
-                $_SESSION["ID_USUARIO"] = 0;
-                $_SESSION["USUARIO"] = $nombre;
-                $_SESSION["CONTRASENIA"] = $contrasenia;           
-                $mensaje = [ $_SESSION["ID_USUARIO"], $_SESSION["USUARIO"], $_SESSION["CONTRASENIA"] ];
-            }
-            else
-            {
-                $mensaje = "El usuario no esta registrado";
-            }   
-        }
-        else
-        {    
-            $mensaje = "El usuario ya esta Autentificado";
-            
-            if(is_null($nombre))
-                $mensaje = "El usuario es invalido";
-            
-            if(is_null($contrasenia)) 
-                $mensaje = "La contraseña es invalida";
-        }
-
-        //PREPARO LA RESPUESTA PARA CONVERTIRLA EN JSON
-        $objectJSON = [ 'ESTADO' => $estado , 'MENSAJE' => $mensaje ];
-        //DEVUELVO EL MENSAJE COMO JSON
-        return json_encode($objectJSON);
+          $administradora = new Administradora;
+          
+          $email = $_POST['EMAIL'];
+          $contrasenia = $_POST['CONTRASENIA'];
+          $respuesta = $administradora->autenticar($email,$contrasenia); 
+          //CONVIERTO EL JSON A UN ARRAY DE PHP
+          $rtaJSON = json_decode($respuesta,true);
+          
+          $estado = $rtaJSON['ESTADO']; 
+          $_SESSION['ESTADO'] = $estado;
+          $mensaje= $rtaJSON['MENSAJE'];
+          
+          if($estado == administradora::ERROR)
+              $_SESSION['ERROR_MENSAJE']=$mensaje;  
     }
+    
 
-  }//FIN CLASE LOGIN
- ?>
+?>
