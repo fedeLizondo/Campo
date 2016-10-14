@@ -1,0 +1,12 @@
+<?php
+
+session_start();
+header('Content-Type: charset=utf-8'); 
+require 'administradora.php';
+if(isset( $_POST['NOMBRE_PROYECTO']) )
+{
+	$administradora = new administradora;
+	echo $administradora->crearProyecto($_POST['NOMBRE_PROYECTO'],$_SESSION[ID_USUARIO],null);
+}
+echo "FIN";
+?> 

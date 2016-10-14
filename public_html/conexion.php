@@ -34,9 +34,9 @@
 
         function autentificar( $usuario , $password )
         { 
-           $estado = false;
-            
-           try{
+            $estado = false;
+            $mensaje = "Error Desconocido";
+            try{
                 $conexion = $this->abrirConexion();
 
                 $query = "SELECT * FROM USUARIO WHERE EMAIL = :nombre ";        
@@ -51,7 +51,7 @@
                     $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
                     $mensaje = "El usuario no esta registrado";
                     $pass = password_verify($password, $resultado['CONTRASENIA']);
-                    if( $resultado > 0 && pass )
+                    if( $resultado > 0 && $pass )
                     {    
                         
                         $_SESSION['ID_USUARIO'] = $resultado['ID_USUARIO'];
@@ -64,11 +64,11 @@
                         $mensaje = array($_SESSION['ID_USUARIO'],$_SESSION['NOMBRE'],$_SESSION['NOMBRE_USUARIO'],$_SESSION['EMAIL'],$_SESSION['CONTRASENIA']);
                     } 
                     $this->cerrarConexion($conexion , $stmt);
-               } 
-               else
-               {
-                   $mensaje = "No se pudo conectar con la base de datos , intente nuevamente"; 
-               }
+                } 
+                else
+                {
+                    $mensaje = "No se pudo conectar con la base de datos , intente nuevamente"; 
+                }
             }
             catch(PDOException $e)
             {
@@ -86,6 +86,7 @@
                 $mensaje = "Error Desconocido";
 
                 $conexion = $this->abrirConexion();
+
                 //$this->abrirConexion($conexion);
               
                 $sql = "INSERT INTO USUARIO (NOMBRE,NOMBRE_USUARIO,CONTRASENIA,EMAIL) VALUES(:user, :name, :pass,:email)"; 
@@ -127,14 +128,120 @@
             }
         }
 
-        function crearProyecto($idUsuario,$password,$nombreProyecto,$integrantes)
+        function crearProyecto($idUsuario,$nombreProyecto,$array_integrantes)
         {
-            return [0];
+            try{
+                $estado = false;
+                $mensaje = "Error Desconocido";
+
+                $conexion = $this->abrirConexion();
+                
+                $sql = "INSERT INTO PROYECTO (ID_USUARIO,NOMBRE) VALUES(:iduser,:name)"; 
+                $stmt = $conexion->prepare($sql);
+               
+                $stmt->bindParam(':iduser',$idUsuario);
+                $stmt->bindParam(':name',$nombreProyecto,PDO::PARAM_STR);
+
+                if($stmt->execute())
+                {
+                           
+                    $_SESSION['ID_PROYECTO'] = $conexion->lastInsertId();
+                    
+
+                    $sql = "INSERT INTO USUARIOS_PROYECTO (ID_PROYECTO,ID_USUARIO,ID_PERMISO) VALUES(:idproyecto,:iduser,0)"; 
+                    $stmt = $conexion->prepare($sql);
+                    $stmt->bindParam(':iduser',$idUsuario);
+                    $stmt->bindParam(':idproyecto',$_SESSION['ID_PROYECTO']);
+                    if($stmt->execute())
+                    {
+                        foreach ($array_integrantes as $elemento) {
+                            $sql = "INSERT INTO USUARIOS_PROYECTO (ID_PROYECTO,ID_USUARIO,ID_PERMISO) VALUES(:idproyecto,:iduser,0)"; 
+                            $stmt = $conexion->prepare($sql);
+                            $stmt->bindParam(':iduser',$elemento);
+                            $stmt->bindParam(':idproyecto',$_SESSION['ID_PROYECTO']);
+                        }
+                            
+                        $estado = true;
+                        $mensaje = array("Se creo el proyecto y se agregaron correctamente los usuarios",$_SESSION['ID_PROYECTO'],$idUsuario);
+                    }
+                    else
+                        $mensaje = "Se creo el proyecto pero no puedo agregar los usuarios al proyecto , intente nuevamente";
+                }
+                else
+                {
+                    $mensaje = "No se pudo conectar con la base de datos , intente nuevamente"; 
+                }
+                $this->cerrarConexion($conexion , $stmt);
+                
+            }
+            catch(PDOException $e)
+            {
+                $mensaje =$e->getMessage();
+            }
+            finally
+            {
+               $objectJSON = ['ESTADO' => $estado,'MENSAJE' => $mensaje];
+               return json_encode($objectJSON);
+            }
         }
 
-        function buscarProyectoNombre($nombreProyecto)
+        function buscarProyectoNombre($nombreProyecto,$pagina)
         {
-           return [];            
+                $estado = false;
+            
+           try{
+                $conexion = $this->abrirConexion();
+                
+                $pagInicio = 0;
+                $cantidadResutaldos = 30;
+                $paginaFin = 1;
+
+                if(!is_null($paginaFin) && is_int($pagina) && pagina >=0)
+                {
+                    $paginaInicio = ($pagina * $cantidadResutaldos);
+                }    
+                
+                $paginaFin = $paginaInicio+$cantidadResutaldos;
+
+                $query = "SELECT * FROM PROYECTO WHERE NOMBRE like :nombre ";//:limit :inicio , :fin";        
+                $stmt =  $conexion->prepare($query);
+                
+                $var ="%".$nombreProyecto."%";
+                $stmt->bindParam(":nombre",$var);
+                /*$stmt->bindParam(":inicio",$pagInicio);
+                $stmt->bindParam(":fin",$paginaFin);*/
+                //$passHASH = password_hash($password,PASSWORD_BCRYPT);
+                //$stmt->bindParam(':pass',$passHASH,PDO::PARAM_STR);
+                $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                if( $stmt->execute() )
+                {
+                    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $mensaje = "No se encontraron resultados";
+                    $estado = true;
+                    if( $resultado > 0  )
+                    {    
+                        $mensaje = array();
+                        $arrayAux = array($resultado['ID_PROYECTO'],$resultado['ID_USUARIO'],$resultado['NOMBRE'],$resultado['FECHA_CREACION']);
+                        array_push($mensaje, $arrayAux);
+
+                        while ( $resultado = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+                            $arrayAux = array($resultado['ID_PROYECTO'],$resultado['ID_USUARIO'],$resultado['NOMBRE'],$resultado['FECHA_CREACION']);
+                            array_push($mensaje, $arrayAux);
+                         } 
+                    } 
+                    $this->cerrarConexion($conexion , $stmt);
+               } 
+               else
+               {
+                   $mensaje = "No se pudo conectar con la base de datos , intente nuevamente"; 
+               }
+            }
+            catch(PDOException $e)
+            {
+               $mensaje = $e->getMessage();
+            }
+            $objectJSON = ['ESTADO' => $estado,'MENSAJE' => $mensaje];
+            return json_encode($objectJSON);   
         }
 
         function buscarProyectoID($idProyecto)

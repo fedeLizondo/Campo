@@ -1,14 +1,17 @@
 <?php
 //header('Content-type: text/html; charset=utf-8');
 //mb_internal_encoding('UTF-8');
- header('Content-Type: charset=utf-8'); 
- require 'administradora.php';
- session_start();
- if( isset($_SESSION['ID_USUARIO']) )
-     header("Location: /principal.php");
+header('Content-Type: charset=utf-8'); 
+require 'administradora.php';
+session_start();
 
- if( isset($_POST['BUSQUEDA_PROYECTO']) )
-     header("Location: /principal.php");
+if( isset($_SESSION['ID_USUARIO']) )
+    header("Location: /principal.php");
+
+if( isset($_SESSION['BUSCAR_PROYECTO']) )
+{
+	header("Location: /buscarProyecto.php");
+}
 
 
 ?>
@@ -234,20 +237,23 @@
     	return !(!str || 0 === str.length || /^\s*$/.test(str));
 	}
 	
-        function Buscar() {
+    function Buscar() {
 	 	var busqueda = $('#buscarProyecto').val();
+
+	 	console.log("ERROR");
 	 	if(isValid(busqueda))
 	 	{
-                 $.ajax({
-		        type:'POST',
-			url:'index.php',
-			data:{BUSCAR_PROYECTO:busqueda},
+            $.ajax({
+		    type:'POST',
+			url:'buscar.php',
+			data:{ BUSCAR_PROYECTO:busqueda },
 			beforeSend:function() {
                                 //$('.fa').css('display','inline');
 			}
 		})
 		.done(function(respuesta) {
-                           location.reload();
+					
+			        location.reload();
                 })
 		.fail( function() {
 			$('#mensajeError').show();	
@@ -266,7 +272,7 @@
 
 	function Registrarse(){
 		
-                var user  = $('#inputUser').val();
+        var user  = $('#inputUser').val();
 		var email = $('#inputEmailRegistrar').val();
 		var name  = $('#inputName').val();
 		var pass  = $('#inputPasswordRegistrar').val(); 
