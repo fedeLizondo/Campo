@@ -20,24 +20,27 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript" src="/js/base.js"></script>
+
 	<!--script src="https://use.fontawesome.com/e7b734d3ed.js"></script-->
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
 
 	<!--script type="text/javascript">
 		$('#myModal').on('shown.bs.modal', function () {
-  														$('#myInput').focus()
-														})
-</script-->
-	<style type="text/css">
-	.fa{
-	       display: none;
-           }
-	</style>
+  			$('#myInput').focus()
+		})
+	</script-->
+
+
 </head>
 <body>
-	<header>
-		<div class="navbar navbar-default navbar-fixed-top">
-			<div class="row">
+
+	<!--header class = "row"-->
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
 			<!-- ACA ES DONDE VOY A INFORMAR LOS ERRORES -->
 			<div class="container-fluid">
 					<div id="mensajeError" onclick="$(this).hide()" class="alert alert-danger" role="alert" style="display:none"></div>
@@ -45,10 +48,10 @@
 		</div> 
 
 		<div class="row"> 
-                    <div class="col-xs-12 col-lg-4 text-center">
-					<h1>MODELA   </h1>
-  
-				</div>
+
+            <div class="col-xs-12 col-lg-4 text-center">
+				<h1>MODELA</h1> 
+  			</div>
 				<div class="col-xs-12 col-lg-4">
 					<h1>
 						<div class="input-group">
@@ -61,16 +64,13 @@
 	    				</div>
 	    			</h1>
 				</div>
-
-					<div class="col-xs-12 col-lg-4 dropdown text-center" style="margin-top:15px">
-		
-						<button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" onclick="LogOut()">							
+				<div class="col-xs-12 col-lg-4 dropdown text-center" style="margin-top:15px">
+					<button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" onclick="LogOut()">							
 							Log out!
-						</button>						
-						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalRegistrarme">
-							<span class="glyphicon glyphicon-user"></span> Crear Proyecto 
-						</button>
-
+					</button>						
+					<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalDatosUsuario">
+						Perfil	<span class="glyphicon glyphicon-user"></span> 
+					</button>
 						<!--ul class="dropdown-menu">
                           <!-- Loguearse >
 							<form class="container-fluid" id="formLogin">
@@ -92,214 +92,152 @@
 								 
 							</form>
 						</ul-->
+				</div>
+			</div>
+		</nav>
+	<!--/header-->
+	<div class="container"> 
+		<div class="row">
+			<div class="col-xs-12 col-lg-6 ">
+			<!-- LISTA FAVORITOS -->
+
+            <div class="box-header with-border">
+              <h3 class="box-title">Favoritos</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <ul class="products-list product-list-in-box">
+                <li class="item">
+                  <div class="product-img">
+                    <img src="/img/default-50x50.gif" alt="Product Image"> <a href="javascript:void(0)" class="product-title">Proyecto 1 </a>
+                    <span class="glyphicon glyphicon-star pull-right"></span>
+                  </div>
+                  <div class="product-info">
+                    
+                      <!--span class="label label-warning pull-right">0</span-->
+                        <span class="product-description">
+                          descripcion del proyecto
+                        </span>
+                  </div>
+                </li>
+                <!-- /.item -->
+              </ul>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer text-center">
+              <a href="javascript:void(0)" class="uppercase">Ver todos los Favoritos</a>
+            </div>
+            <!-- /.box-footer -->
+                    
+			</div>
+
+			<div class="col-xs-12 col-lg-6">
+			<button type="button" class="btn btn-primary btn-lg btn-block hidden-md-down" data-toggle="modal" data-target="#modalRegistrarProyecto">
+				<span class="glyphicon glyphicon-user"></span> Crear Proyecto
+				<i class="fa fa-file-text"></i> 
+			</button>
+				<!-- Ventana Modal CrearProyecto-->
+				</div>
+				<div class="modal fade" id="modalRegistrarProyecto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+
+								<div class="row">
+									<!-- ACA ES DONDE VOY A INFORMAR LOS ERRORES -->
+									<div class="container-fluid">
+										<div id="mensajeErrorRegistrar" onclick="$(this).hide()" class="alert alert-danger" role="alert" style="display:none"></div>
+									</div>
+								</div> 
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h2 class="modal-title" id="myModalLabel">Crear Proyecto</h2>
+							</div><!-- end modal-header-->
+
+							<div class="modal-body">
+								<div class="row container-fluid">
+									<form class="col-lg-4 col-lg-push-2">
+										<div class="form-group">
+											<label for="usr">Nombre del proyecto </label>
+											<input type="text" class="form-control" id="inputUser" placeholder="User">
+										</div>
+										<div class="form-group">
+											<label for="exampleInputEmailA">Invitar a un usuario Email </label>
+											<input type="email" class="form-control" id="inputEmailRegistrar" placeholder="Email@email.com">
+										</div>            
+									</form>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<div class="col-lg-8 col-lg-push-1">
+									<button type="submit" class="btn btn-primary" onclick="RegistrarProyecto()">Registrarse</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+								</div>
+							</div>
+						</div>
 					</div>
-			</div>
-		</div>
-
-	
-	</header>
-
-<!-- Ventanas Modals -->
-
-<!-- OLVIDE MI CONTRASEÑA-->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h2 class="modal-title" id="myModalLabel">Recuperar Contraseña</h2>
-      </div>
-      <div class="modal-body">
-         <form >
-      		<div class="form-group">
-      			<label for="exampleInputEmail1">Dirección de Email </label>
-      			<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email@email.com">
-      		</div>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Recuperar</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Registrarme-->
-<div class="modal fade" id="modalRegistrarme" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-
-      	<div class="row">
-			<!-- ACA ES DONDE VOY A INFORMAR LOS ERRORES -->
-			<div class="container-fluid">
-				<div id="mensajeErrorRegistrar" onclick="$(this).hide()" class="alert alert-danger" role="alert" style="display:none"></div>
-			</div>
-		</div> 
-        
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h2 class="modal-title" id="myModalLabel">Crear Proyecto</h2>
-      </div>
-      <div class="modal-body">
-      	<div class="row container-fluid">
-      	<form class="col-lg-4 col-lg-push-2">
-      		<div class="form-group">
-      			<label for="usr">Nombre del proyecto </label>
-      			<input type="text" class="form-control" id="inputUser" placeholder="User">
-      		</div>
-      		<div class="form-group">
-      			<label for="exampleInputEmailA">Invitar a un usuario Email </label>
-      			<input type="email" class="form-control" id="inputEmailRegistrar" placeholder="Email@email.com">
-      		</div>            
- 
-      	</form>
-      	</div>
-
-      </div>
-      <div class="modal-footer">
-
-      	<div class="col-lg-8 col-lg-push-1">
-        <button type="submit" class="btn btn-primary" onclick="Registrarse()">Registrarse</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
-        
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script type="text/javascript">
-
-	$(document).ready(function(){	
-	
-		$('form').submit( function(e){
-			e.preventDefault();
-		})
-
-	})
-         
-       $('#buscarProyecto').keypress(function(e){   
-               if( e.which == 13 ){      
-                Buscar();      
-               }   
-              });	
-		
-	function LogOut() {
-				  
-		$.ajax({
-			type:'POST',
-			url:'logout.php',
-			data:{},
-			beforeSend:function() {
-                                
-			}
-		})
-		.done(function(respuesta) {
-			//location.reload();
-			document.location.href="http://modela.esy.es/logout.php";
-		} )
-		.fail( function() {
-			$('#mensajeError').show();	
-			$('#mensajeError').html("HAY UN ERROR MUY GRAVE CON AJAX");
-		})
-		.always( function(){
-                console.log("-------------DESPUES--------------");
-				$('.fa').hide();
-		})
-	}
-	
-	function isValid(str) {
-    	return !(!str || 0 === str.length || /^\s*$/.test(str));
-	}
-	
-    function Buscar() {
-		var busqueda = $('#buscarProyecto').val();
-	 	if(isValid(busqueda))
-	 	{
-        $.ajax({
-		    type:'POST',
-			url:'buscar.php',
-			data:{BUSCAR_PROYECTO:busqueda},
-			beforeSend:function() {
-                                //$('.fa').css('display','inline');
-			}
-		})
-		.done(function(respuesta) {
-                           location.reload();
-                })
-		.fail( function() {
-			$('#mensajeError').show();	
-			$('#mensajeError').html("HAY UN ERROR con el servidor no se pudo buscar");
-		})
-		.always( function(){
-                $('.fa').hide();
-		})
-   
- 		
-	 	}
-	 }
-     
-	function Registrarse(){
-		
-        var user  = $('#inputUser').val();
-		var email = $('#inputEmailRegistrar').val();
-		
-                var pass2 = $('#inputConfirmPassword').val();
-		
-                //VALIDAR LOS CAMPOS
-
-
-                        $.ajax({
-							beforeSend:function() {
-								console.log("ESTOY POR MANDAR EL REQUEST");
-							},
-							url:'registrarProyecto.php',
-							type:'POST',
-                            data: {NOMBRE_PROYECTO:user},
-							success:function(respuesta) {
-                                                                        console.log("-----------------------------------------");
-                                                                        console.log(respuesta);
-                                                                        console.log("-----------------------------------------");
-                                                                       
-                                                        
-                                                        },
-							error:function(jqXHR,estado,error){
-								console.log(estado);
-								console.log(error);
-							},
-							complete:function(jqXHR,estado) {
-								console.log("EL COMPLETE:"+estado);
-							},
-							timeout:5000
-						})
-
-					}
-					else
-					{
-						$('#mensajeErrorRegistrar').show();	
-						$('#mensajeErrorRegistrar').html("Complete el password");
-					}//FIN PASSWORD INVALIDO
-				}
-				else
-				{
-					$('#mensajeErrorRegistrar').show();	
-					$('#mensajeErrorRegistrar').html("Complete el email");
-				}//FIN EMAIL INVALIDO
-			}
-			else
-			{
-				$('#mensajeErrorRegistrar').show();	
-				$('#mensajeErrorRegistrar').html("Complete el nombre");
-			}//FIN NOMBRE_USUARIO INVALIDO
-		}
-		else
-		{
-			$('#mensajeErrorRegistrar').show();	
-			$('#mensajeErrorRegistrar').html("Complete el nombre de usuario");
-		}//FIN USUARIO INVALIDO
+				</div>
 			
-	} 	
-</script>
+		</div>
+	</div>
+<style>
 
+.box.box-primary {
+    border-top-color: #3c8dbc;
+}
+.box {
+    position: relative;
+    border-radius: 3px;
+    background: #ffffff;
+    border-top: 3px solid #d2d6de;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+
+.box-header.with-border {
+    border-bottom: 1px solid #f4f4f4;
+}
+.box-header {
+    color: #444;
+    display: block;
+    padding: 10px;
+    position: relative;
+}
+
+.box-body {
+
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    padding: 10px;
+
+}
+.box-footer {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top: 1px solid #f4f4f4;
+    padding: 10px;
+    background-color: #fff;
+}
+.text-center {
+    text-align: center;
+}
+
+.btn-box-tool {
+    padding: 5px;
+    font-size: 12px;
+    background: transparent;
+    color: #97a0b3;
+}
+</style>
 </body>
 </html>

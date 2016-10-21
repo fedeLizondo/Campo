@@ -2,11 +2,13 @@
 //header('Content-type: text/html; charset=utf-8');
 //mb_internal_encoding('UTF-8');
 header('Content-Type: charset=utf-8'); 
-require 'administradora.php';
+require 'Clases/administradora.php';
 session_start();
 
 if( isset($_SESSION['ID_USUARIO']) )
+{
     header("Location: /principal.php");
+}
 
 if( isset($_SESSION['BUSCAR_PROYECTO']) )
 {
@@ -26,7 +28,9 @@ if( isset($_SESSION['BUSCAR_PROYECTO']) )
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<!--script src="https://use.fontawesome.com/e7b734d3ed.js"></script-->
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-
+	<script type="text/javascript" src="js/base.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
 	<!--script type="text/javascript">
 		$('#myModal').on('shown.bs.modal', function () {
   														$('#myInput').focus()
@@ -50,7 +54,7 @@ if( isset($_SESSION['BUSCAR_PROYECTO']) )
 
 		<div class="row"> 
                     <div class="col-xs-12 col-lg-4 text-center">
-					<h1>MODELA   </h1>
+					<h1>MODELA</h1>
   
 				</div>
 				<div class="col-xs-12 col-lg-4">
@@ -77,7 +81,7 @@ if( isset($_SESSION['BUSCAR_PROYECTO']) )
 						</button>
 
 						<ul class="dropdown-menu">
-                                                        <!-- Loguearse -->
+                        <!-- Loguearse -->
 							<form class="container-fluid" id="formLogin">
 								<div class="form-group">
 									<label for="exampleInputEmail1">Dirección de Email </label>
@@ -100,9 +104,7 @@ if( isset($_SESSION['BUSCAR_PROYECTO']) )
 					</div>
 			</div>
 		</div>
-
-	
-	</header>
+</header>
 
 <!-- Ventanas Modals -->
 
@@ -184,190 +186,6 @@ if( isset($_SESSION['BUSCAR_PROYECTO']) )
     </div>
   </div>
 </div>
-
-<script type="text/javascript">
-
-	$(document).ready(function(){	
-	
-		$('form').submit( function(e){
-			e.preventDefault();
-		})
-
-	})
-         
-       $('#buscarProyecto').keypress(function(e){   
-               if(e.which == 13){      
-                Buscar();      
-               }   
-              });	
-		
-	function Login() {
-		var email = document.getElementById('InputEmailLogin').value;
-		var pass = document.getElementById('InputPasswordLogin').value;
-				  
-		$.ajax({
-			type:'POST',
-			url:'login.php',
-			data:{EMAIL:email,CONTRASENIA:pass},
-			beforeSend:function() {
-                                $('.fa').css('display','inline');
-                                
-			}
-		})
-		.done(function(respuesta) {
-                        console.log("ESTA ES LA RESPUESTA: "+respuesta+" \n");
-                        JSONData = jQuery.parseJSON(respuesta);
-                        console.log(JSONData);
-                        if( JSONData.ESTADO )
-                        {
-                            location.reload();
-                        } 
-		} )
-		.fail( function() {
-			$('#mensajeError').show();	
-			$('#mensajeError').html("HAY UN ERROR MUY GRAVE CON AJAX");
-		})
-		.always( function(){
-                                console.log("-------------DESPUES--------------");
-				$('.fa').hide();
-		})
-	}
-	
-	function isValid(str) {
-    	return !(!str || 0 === str.length || /^\s*$/.test(str));
-	}
-	
-    function Buscar() {
-	 	var busqueda = $('#buscarProyecto').val();
-
-	 	console.log("ERROR");
-	 	if(isValid(busqueda))
-	 	{
-            $.ajax({
-		    type:'POST',
-			url:'buscar.php',
-			data:{ BUSCAR_PROYECTO:busqueda },
-			beforeSend:function() {
-                                //$('.fa').css('display','inline');
-			}
-		})
-		.done(function(respuesta) {
-					
-			        location.reload();
-                })
-		.fail( function() {
-			$('#mensajeError').show();	
-			$('#mensajeError').html("HAY UN ERROR con el servidor no se pudo buscar");
-		})
-		.always( function(){
-                $('.fa').hide();
-		})
-   
- 		
-	 	}
-	 }
-
-
-
-
-	function Registrarse(){
-		
-        var user  = $('#inputUser').val();
-		var email = $('#inputEmailRegistrar').val();
-		var name  = $('#inputName').val();
-		var pass  = $('#inputPasswordRegistrar').val(); 
-                var pass2 = $('#inputConfirmPassword').val();
-		
-                //VALIDAR LOS CAMPOS
-
-		if( isValid(user) )
-		{
-			if(isValid(name))
-			{
-				if(isValid(email))
-				{
-					if( isValid(pass) && pass == pass2 )
-					{
-						/*$.ajax({
-							type:'POST',
-							url: 'registrarUsuario.php',
-							data: ('USUARIO='+user+'&NOMBRE='+name+'&EMAIL='+email+'&CONTRASENIA='+pass),
-							beforeSend:function() {
-							$('.fa').css('display','inline');
-							}
-						})
-						.done(function() {
-							console.log("EXITO");
-						} )
-						.fail( function() {
-							$('#mensajeError').show();	
-							$('#mensajeError').html("HAY UN ERROR MUY GRAVE CON AJAX");
-						})
-						.always( function(){
-								$('.fa').hide();
-						})*/
-
-                                                $.ajax({
-							beforeSend:function() {
-								console.log("ESTOY POR MANDAR EL REQUEST");
-							},
-							url:'registrarUsuario.php',
-							type:'POST',
-                                                        data: {USUARIO:user,NOMBRE:name,EMAIL:email,CONTRASENIA:pass},
-							success:function(respuesta) {
-                                                                        console.log("-----------------------------------------");
-                                                                        console.log(respuesta);
-                                                                        console.log("-----------------------------------------");
-                                                                        JSONData = jQuery.parseJSON(respuesta);
-                                                                        console.log(JSONData);
-
-                                                                        if( JSONData.ESTADO )
-                                                                        {
-                                                                            location.reload();
-                                                                        }   
-                                                        
-                                                        },
-							error:function(jqXHR,estado,error){
-								console.log(estado);
-								console.log(error);
-							},
-							complete:function(jqXHR,estado) {
-								console.log("EL COMPLETE:"+estado);
-							},
-							timeout:5000
-						})
-
-					}
-					else
-					{
-						$('#mensajeErrorRegistrar').show();	
-						$('#mensajeErrorRegistrar').html("Complete el password");
-					}//FIN PASSWORD INVALIDO
-				}
-				else
-				{
-					$('#mensajeErrorRegistrar').show();	
-					$('#mensajeErrorRegistrar').html("Complete el email");
-				}//FIN EMAIL INVALIDO
-			}
-			else
-			{
-				$('#mensajeErrorRegistrar').show();	
-				$('#mensajeErrorRegistrar').html("Complete el nombre");
-			}//FIN NOMBRE_USUARIO INVALIDO
-		}
-		else
-		{
-			$('#mensajeErrorRegistrar').show();	
-			$('#mensajeErrorRegistrar').html("Complete el nombre de usuario");
-		}//FIN USUARIO INVALIDO
-			
-	}
-      
-
-
-	
-</script>
 
 </body>
 </html>
